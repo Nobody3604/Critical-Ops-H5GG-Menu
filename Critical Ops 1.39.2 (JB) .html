@@ -169,7 +169,7 @@ function patchBytes(addr, hex) {
     }
 }
 
-
+//private void DrawCharacterIndicators(IndicatorRenderer indicatorRenderer, int followedId, vo2eqio<int> localTeamIndex) { }
 function Test(event){
 
 var text = event.textContent || event.innerText;
@@ -194,7 +194,7 @@ patchBytes(addr,  "1F050031");//cmn w8, #1
   
   
   
-
+//public void GetSpottedStatus(out Character.GetSpottedStatusResult spotted) { }
 function Test1(event){
 
 var text1 = event.textContent || event.innerText;
@@ -216,7 +216,7 @@ patchBytes(addr,  "C8098052");//Mov x8, #0x4E
 }
 }
   
-
+//private void RecoilRecover(float dt) { }
 function Test2(event) {
 
 var text2 = event.textContent || event.innerText;
@@ -246,7 +246,7 @@ patchBytes(addr,  "010941BD");
 }
 }
 
-  
+  //public void UpdateSpread() { }
 function Test3(event) {
 
 var text3 = event.textContent || event.innerText;
@@ -268,6 +268,8 @@ patchBytes(addr,  "E923BD6D");
 }   
 }
 
+    
+//private void UpdateCharacterHitBuffer(Character character, Ray ray, ref int hitIndex) { }
 function Test4(event) {
 
 var text4 = event.textContent || event.innerText;
@@ -289,7 +291,7 @@ patchBytes(addr,  "E003271E");
 }
 }
 
-
+//public bool get_Crosshair() { }
 function Test5(event){
 
 var text5 = event.textContent || event.innerText;
@@ -310,6 +312,8 @@ patchBytes(addr,  "00804239");
 }
 }
 
+    
+ //public void ExplodeGrenade() { }
 function Test6(event){
 var text6 = event.textContent || event.innerText;
 if (text6 == 'No Flash/Smoke ❌') {
@@ -329,7 +333,7 @@ patchBytes(addr,  "FF8302D1");
 }
 }
 
-
+//private void UpdateWallHit(RaycastHit hit, WallPenetration wallPenetration, ref int damagePercent, out MaterialDef hitMaterial) { }
 function Test7(event){
 var text7 = event.textContent || event.innerText;
 if (text7 == 'Shoot Through Walls ❌') {
@@ -349,7 +353,7 @@ patchBytes(addr,  "FF4301D1");
 }
 }
 
-
+//public void set_Spread(float value) { }
 function Test8(event){
 var text8 = event.textContent || event.innerText;
 if (text8 == 'No Sniper Blur ❌') {
@@ -369,7 +373,7 @@ patchBytes(addr,  "EB2BBB6D");
 }
 }
 
-
+//public float get_radius() { }
 function Test9(event){
 var text9 = event.textContent || event.innerText;
 if (text9 == 'Walk Through Walls ❌') {
@@ -389,7 +393,7 @@ patchBytes(addr,  "F44FBEA9FD7B01A9");
 }
 }
 
-
+//public float get_height() { }
 function Test10(event){
 var text10 = event.textContent || event.innerText;
 if (text10 == 'Walk on Air ❌') {
@@ -409,6 +413,13 @@ patchBytes(addr,  "F44FBEA9FD7B01A9");
 }
 }
 
+    
+    
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsGameplayStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsMenuStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsPracticeStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsFirstMatchStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsProfileStageCompleted() { }
 function Test11(event){
 
 var text11 = event.textContent || event.innerText;
