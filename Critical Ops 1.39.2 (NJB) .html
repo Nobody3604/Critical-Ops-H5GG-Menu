@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Critical Ops</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+* {
+    /*默认文字颜色*/
+    color: #000;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+}
+html {
+    zoom: 0.8
+}
+body{
+    widht: 100%;
+    background-color: transparent;
+}
+
+#H5AlertView {
+    text-align:center;
+    /*
+    border: 1px dashed gray; background: #000;*/
+}
+
+#title-img{
+    position: relative;
+    z-index:1;
+}
+
+#title-text{
+    padding-top:30px;
+    font-size:18px;
+    color: #23b574;
+}
+
+#info-text{
+    padding:10px;
+    color:#23b574;
+}
+
+#content-view{
+    z-index:0;
+    background: #fff;
+    position: relative;
+    top: -45px;
+    border: 2px solid #E8E8E8;
+    border-radius:25px;
+    padding: 10px;
+}
+
+button {
+    width: 100%;
+    height: 40px;
+    color: red;
+    background-color: #23b574;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    padding: 0 8px;
+    margin: 5px 0;
+    font-size:15px;
+}
+
+button:active {
+    background-color: #007e40;
+    transform: translateY(2px);
+}
+    
+/* 滚动条整体部分 */
+.scrollbar {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.scrollbar::-webkit-scrollbar {
+    width: 5px; /* 纵向滚动条宽度 */
+    height: 5px;/* 横向滚动条高度 */
+    background-color: #F5F5F5; /* 滚动条整体背景，一般被覆盖着 */
+}
+/* 滚动条的轨道（里面装有Thumb） */
+.scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); /* 滚动条轨道阴影 */
+    /*border-radius: 10px; /* 滚动条轨道圆角 */
+    background-color: #F5F5F5; /* 滚动条轨道背景 */
+}
+/* 滚动条里面的滑块 */
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 15px; /* 滚动条滑块圆角 */
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); /* 滚动条滑块阴影 */
+    background-color: #B8B8B8; /* 滚动条滑块颜色 */
+}
+
+</style>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+if(typeof $ == 'undefined') alert("网络异常无法访问百度CDN!");
+
+//页面显示完毕事件
+$(document).ready(function(){
+    /*禁止文本选择和拖动*/
+    document.body.onselectstart = document.body.ondrag =function(){
+        return false;
+    }
+    //文本框等输入完毕后页面自动滚动到顶部
+    $("input").blur(function(){
+        window.scroll(0,0);
+    });
+    
+    //激活webkit的button:active
+    document.body.addEventListener('touchstart', function () {});
+    
+    
+    //设置可拖动区域为圆形区域
+    setWindowDrag(50, 00, 70, 70);
+    
+    if(typeof h5gg != 'undefined')
+    {
+        //调整悬浮窗位置和尺寸并全屏居中显示
+        var w=230; var h=300;
+        
+        var layout = function()
+        {
+            //window.orientation是设备握持方向, 不是屏幕显示方向
+            if(window.lastorientation==window.orientation) return;
+            window.lastorientation=window.orientation;
+            
+            //window.screen中的宽高不会随着屏幕旋转更新(只会在初始化的时候固定)
+            if(Math.abs(window.orientation)==90) {
+                //横屏
+                var x=(window.screen.height - w)/2;
+                var y=(window.screen.width - h)/2;
+                setWindowRect(x, y, w, h);
+            } else {
+                //竖屏
+                var x=(window.screen.width - w)/2;
+                var y=(window.screen.height - h)/2;
+                setWindowRect(x, y, w, h);
+            }
+        }
+        
+        layout(); //设置旋转屏幕时自动调整布局和画布
+        window.addEventListener("orientationchange", layout, false);
+    }
+});
+                  
+</script>
+</head>
+<body>
+
+<div id="H5AlertView">
+<div id="title-img">
+<!--icon image data-->
+ <img style="width: 80px;height: 80px; border-radius: 50%;" //src="data:image/png;base64,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" width="200" height="200"/>
+</div>
+ 
+<script>
+
+h5gg.require(7.9); 
+var h5frida=h5gg.loadPlugin("h5frida", "h5frida-16.0.10.dylib");
+if(!h5frida) throw "Failed to load h5frida plugin";
+
+function ActiveCodePatch(fpath, vaddr, bytes) {
+    if(!h5frida.ActiveCodePatch(fpath, vaddr, bytes)) {
+        var result = h5frida.ApplyCodePatch(fpath, vaddr, bytes);
+        alert(fpath+":0x"+vaddr.toString(16)+"-修改失败!\n" + fpath+":0x"+vaddr.toString(16)+"-PatchFailed!\n" + result);return false;
+    } return true;
+}
+function DeactiveCodePatch(fpath, vaddr, bytes) {
+    return h5frida.DeactiveCodePatch(fpath, vaddr, bytes);
+}
+
+//private void DrawCharacterIndicators(IndicatorRenderer indicatorRenderer, int followedId, vo2eqio<int> localTeamIndex) { }
+function Test(event){
+
+var text = event.textContent || event.innerText;
+
+if (text == 'CharacterIndicator ❌') {
+event.innerHTML = 'CharacterIndicator ✔';
+S1.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1610670, "200080D2");
+} else {
+event.innerHTML = 'CharacterIndicator ❌';
+S1.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1610670, "200080D2");
+}
+}
+  
+  
+  
+//public void GetSpottedStatus(out Character.GetSpottedStatusResult spotted) { }
+function Test1(event){
+
+var text1 = event.textContent || event.innerText;
+
+if (text1 == 'Radar ❌') {
+event.innerHTML = 'Radar ✔';
+S2.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1572DEC, "C8008052");
+} else {
+event.innerHTML = 'Radar ❌';
+S2.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1572DEC, "C8008052");
+}
+}
+  
+//private void RecoilRecover(float dt) { }
+function Test2(event) {
+
+var text2 = event.textContent || event.innerText;
+
+if (text2 == 'No Recoil ❌') {
+event.innerHTML = 'No Recoil ✔';
+S3.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x143880C, "000941BD");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438820, "000941BD");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438838, "000941BD");
+} else {
+event.innerHTML = 'No Recoil ❌';
+S3.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x143880C, "000941BD");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438820, "000941BD");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438838, "000941BD");
+}
+}
+
+  //public void UpdateSpread() { }
+function Test3(event) {
+
+var text3 = event.textContent || event.innerText;
+
+if (text3 == 'No Spread ❌') {
+event.innerHTML = 'No Spread ✔';
+S4.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438904, "C0035FD6");
+} else {
+event.innerHTML = 'No Spread ❌';
+S4.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1438904, "C0035FD6");
+}   
+}
+
+    
+//private void UpdateCharacterHitBuffer(Character character, Ray ray, ref int hitIndex) { }
+function Test4(event) {
+
+var text4 = event.textContent || event.innerText;
+
+if (text4 == 'Rain ❌') {
+event.innerHTML = 'Rain ✔';
+S5.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15EF458, "0090261E");
+} else {
+event.innerHTML = 'Rain ❌';
+S5.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15EF458, "0090261E");
+}
+}
+
+//public bool get_Crosshair() { }
+function Test5(event){
+
+var text5 = event.textContent || event.innerText;
+if (text5 == 'Always Crosshair ❌') {
+event.innerHTML = 'Always Crosshair ✔️';
+S6.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x16093A8, "200080D2");
+} else {
+event.innerHTML = 'Always Crosshair ❌';
+S6.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x16093A8, "200080D2");
+}
+}
+
+    
+ //public void ExplodeGrenade() { }
+function Test6(event){
+var text6 = event.textContent || event.innerText;
+if (text6 == 'No Flash/Smoke ❌') {
+event.innerHTML = 'No Flash/Smoke ✔️';
+S7.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1607384, "C0035FD6");
+} else {
+event.innerHTML = 'No Flash/Smoke ❌';
+S7.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1607384, "C0035FD6");
+}
+}
+
+//private void UpdateWallHit(RaycastHit hit, WallPenetration wallPenetration, ref int damagePercent, out MaterialDef hitMaterial) { }
+function Test7(event){
+var text7 = event.textContent || event.innerText;
+if (text7 == 'Shoot Through Walls ❌') {
+event.innerHTML = 'Shoot Through Walls ✔️';
+S8.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15EED6C, "C0035FD6");
+} else {
+event.innerHTML = 'Shoot Through Walls ❌';
+S8.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15EED6C, "C0035FD6");
+}
+}
+
+//public void set_Spread(float value) { }
+function Test8(event){
+var text8 = event.textContent || event.innerText;
+if (text8 == 'No Sniper Blur ❌') {
+event.innerHTML = 'No Sniper Blur ✔️';
+S9.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x157E6FC, "C0035FD6");
+} else {
+event.innerHTML = 'No Sniper Blur ❌';
+S9.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x157E6FC, "C0035FD6");
+}
+}
+
+//public float get_radius() { }
+function Test9(event){
+var text9 = event.textContent || event.innerText;
+if (text9 == 'Walk Through Walls ❌') {
+event.innerHTML = 'Walk Through Walls ✔️';
+S10.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x2266B4C, "0090341EC0035FD6");
+} else {
+event.innerHTML = 'Walk Through Walls ❌';
+S10.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x2266B4C, "0090341EC0035FD6");
+}
+}
+
+//public float get_height() { }
+function Test10(event){
+var text10 = event.textContent || event.innerText;
+if (text10 == 'Walk on Air ❌') {
+event.innerHTML = 'Walk on Air ✔️';
+S11.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x2266B8C, "0010221EC0035FD6");
+} else {
+event.innerHTML = 'Walk on Air ❌';
+S11.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x2266B8C, "0010221EC0035FD6");
+}
+}
+
+    
+    
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsGameplayStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsMenuStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsPracticeStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsFirstMatchStageCompleted() { }
+ //public vo2eqio<TutorialManager.StageCompletionResult> get_IsProfileStageCompleted() { }
+function Test11(event){
+
+var text11 = event.textContent || event.innerText;
+if (text11 == 'Tutorial Bypass ❌') {
+event.innerHTML = 'Tutorial Bypass ✔️';
+S12.style.color="#494949";
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1504364, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x150457C, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503974, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15038F8, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503784, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503794, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503624, "68018052");
+ActiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503614, "68018052");
+} else {
+event.innerHTML = 'Tutorial Bypass ❌';
+S12.style.color="red";
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1504364, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x150457C, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503974, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x15038F8, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503784, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503794, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503624, "68018052");
+DeactiveCodePatch("Frameworks/UnityFramework.framework/UnityFramework", 0x1503614, "68018052");
+}
+}
+
+</script>
+<div id="content-view">
+<div id="title-text">Critical Ops 1.39.2</div>
+<div id="info-text">Mod Menu by EvilBunny420#6659</div>
+<div class="scrollbar" style="max-height:220px">
+<button id='S1' onclick="Test(this)">CharacterIndicator ❌</button>
+<button id='S2' onclick="Test1(this)">Radar ❌</button>
+<button id='S3' onclick="Test2(this)">No Recoil ❌</button>
+<button id='S4' onclick="Test3(this)">No Spread ❌</button>
+<button id='S5' onclick="Test4(this)">Rain ❌</button>
+<button id='S6' onclick="Test5(this)">Always Crosshair ❌</button>
+<button id='S7' onclick="Test6(this)">No Flash/Smoke ❌</button>
+<button id='S8' onclick="Test7(this)">Shoot Through Walls ❌</button>
+<button id='S9' onclick="Test8(this)">No Sniper Blur ❌</button>
+<button id='S10' onclick="Test9(this)">Walk Through Walls ❌</button>
+<button id='S11' onclick="Test10(this)">Walk on Air ❌</button>
+<button id ='S12' onclick="Test11(this)">Tutorial Bypass ❌</button>
+
+
+
+
+</div>
+</div>
+</div>
+
+
+
+</body>
+</html>
